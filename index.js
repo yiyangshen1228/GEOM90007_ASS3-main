@@ -34,47 +34,61 @@ let layers = [
 
 
     // Loading map
-    map.on('load', e => {
+    map.on('load', function() {
+    	for (let layer of layers) {
+        let link = document.createElement('a');
 
-        // add layer and button of land-use layers 
-        for (let layer of layers) {
-            map.addLayer({
-                "id": layer.name,
-                "type": "circle",
-                "source": {
-                    "type": "vector",
-                    "url": "mapbox://yueruc.6c7u7jru"
-                }, 
-                "source-layer": "POI1-dsy5ld",
-                "paint": {
-                    "circle-color": layer.color,
-                    "circle-stroke-color": "#000000"
-                },
-                "filter": ["==", "Classification", layer.name]
-                });
+        link.href = '#';
 
-            // make legend button
-            let link = document.createElement('a');
+        link.textContent = layer.name;
+        link.dataset.layerName = layer.name;
+        link.dataset.activity = 'none';
 
-            link.href = '#';
+        let buttons = document.querySelector('#buttons');
 
-            link.textContent = layer.name;
-            link.dataset.layerName = layer.name;
-            link.dataset.activity = 'none';
+        let legend = document.createElement('span');
+        legend.style.backgroundColor = layer.color;
 
-            let buttons = document.querySelector('#buttons');
+        legend.className = 'legend-key';
+        buttons.appendChild(legend);
+        buttons.appendChild(link);
+      }
+    });
 
-            let legend = document.createElement('span');
-            legend.style.backgroundColor = layer.color;
-
-            legend.className = 'legend-key';
-            buttons.appendChild(legend);
-            buttons.appendChild(link);
-
-
+    map.on('style.load', function() {
+      for (let layer of layers) {
+      	if (layer.name === 'Art Museum' && document.querySelector('input[name="rtoggle"]:checked').value === 'dark') {
+        	continue;
         }
+        map.addLayer({
+          "id": layer.name,
+          "type": "circle",
+          "source": {
+            "type": "vector",
+            "url": "mapbox://yueruc.6c7u7jru"
+          },
+          "source-layer": "POI1-dsy5ld",
+          "paint": {
+            "circle-color": layer.color,
+            "circle-stroke-color": "#000000"
+          },
+          "filter": ["==", "Classification", layer.name]
+        });
+      }
+    });
 
-    });    
+    var layerList = document.getElementById('mapformat');
+    var inputs = layerList.getElementsByTagName('input');
+
+    function switchLayer(layer) {
+      var layerId = layer.target.id;
+      map.setStyle('mapbox://styles/mapbox/' + layerId);
+    }
+
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].onclick = switchLayer;
+    }
+
 
   
 

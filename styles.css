@@ -65,5 +65,13 @@ body {
     color: #404040;
 }
 
+#mapformat {
+position: absolute;
+right:10px;
+top:10px;
+background: #efefef;
+padding: 10px;
+font-family: 'Open Sans', sans-serif;
+}
 
 
